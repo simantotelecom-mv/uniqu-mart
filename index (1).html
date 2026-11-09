@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="bn"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ইউনিক মার্ট</title>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<style>
+:root{--bg:#f2f7f7;--cd:#fff;--tx:#14262a;--mu:#5d7276;--br:#dbe6e7;--pr:#0b5d63;--pl:#dff0f0;--rd:#d4513a;--gn:#18875a}
+html[data-mode=dark]{--bg:#0e1819;--cd:#162426;--tx:#e6f1f1;--mu:#8ea6a9;--br:#25393c;--rd:#ef7f6a;--gn:#4cc98f}
+html[data-theme=ocean]{--pr:#0b5d63;--pl:#dff0f0;--p2:#1f9aa0}
+html[data-theme=ocean][data-mode=dark]{--pr:#4cc4c0;--pl:#1b3638;--p2:#0b5d63}
+html[data-theme=green]{--pr:#1c7c3f;--pl:#e1f4e7;--p2:#4fb06a}
+html[data-theme=green][data-mode=dark]{--pr:#5fd48a;--pl:#1b3a28;--p2:#1c7c3f}
+html[data-theme=royal]{--pr:#2547c9;--pl:#e3e9fc;--p2:#5b7cf0}
+html[data-theme=royal][data-mode=dark]{--pr:#8ba3ff;--pl:#1e2850;--p2:#2547c9}
+html[data-theme=sunset]{--pr:#d9541e;--pl:#fdeadf;--p2:#f59a3c}
+html[data-theme=sunset][data-mode=dark]{--pr:#ff8a5c;--pl:#40251a;--p2:#d9541e}
+html[data-theme=purple]{--pr:#7a3fd1;--pl:#efe5fb;--p2:#b57cf0}
+html[data-theme=purple][data-mode=dark]{--pr:#c39bff;--pl:#2f2147;--p2:#7a3fd1}
+
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.5 "Hind Siliguri",system-ui,sans-serif;padding:env(safe-area-inset-top) 0 90px}
+.w{max-width:520px;margin:0 auto;padding:12px}
+.mq{overflow:hidden;white-space:nowrap;background:linear-gradient(90deg,var(--pr),var(--p2));color:#fff;border-radius:14px;padding:9px 0;font-weight:500}
+.mq span{display:inline-block;padding-left:100%;animation:m 22s linear infinite}
+@keyframes m{to{transform:translateX(-100%)}}
+@media(prefers-reduced-motion:reduce){.mq span{animation:none;padding:0 12px}}
+.c{background:var(--cd);border:1px solid var(--br);border-radius:14px;padding:14px;margin-top:12px}
+.g{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.k{background:var(--cd);border:1px solid var(--br);border-radius:12px;padding:10px 12px}
+.k small{color:var(--mu);display:block}.k b{font-size:20px;font-weight:600}
+h3{margin:0 0 8px;font-size:16px;font-weight:600}
+input,select{width:100%;padding:11px;border:1px solid var(--br);border-radius:10px;background:var(--bg);color:var(--tx);font:inherit;margin-bottom:8px}
+button{font:inherit;padding:11px 14px;border-radius:10px;border:1px solid var(--br);background:var(--cd);color:var(--tx);cursor:pointer}
+button.p{background:linear-gradient(135deg,var(--pr),var(--p2));color:#fff;border-color:var(--pr)}
+:focus-visible{outline:2px solid var(--pr);outline-offset:2px}
+.r{display:flex;gap:8px}.r>*{flex:1}
+.i{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-top:1px solid var(--br)}
+.i small{color:var(--mu)}
+.nav{position:fixed;left:0;right:0;bottom:0;display:flex;background:var(--cd);border-top:1px solid var(--br);padding-bottom:env(safe-area-inset-bottom)}
+.nav button{flex:1;border:0;border-radius:0;background:none;padding:14px 4px}
+.nav button.a{color:var(--pr);font-weight:600;box-shadow:inset 0 3px var(--pr)}
+.rd{color:var(--rd)}.gn{color:var(--gn)}.mu{color:var(--mu)}
+.x{background:none;border:0;padding:4px 8px;color:var(--mu)}
+.c,.k{box-shadow:0 2px 12px rgba(0,0,0,.06)}
+.k{border-left:4px solid var(--pr)}
+.hd{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.hd b{display:block;font-size:18px;font-weight:600;line-height:1.2}.hd small{color:var(--mu)}
+.lg{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,var(--pr),var(--p2));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:20px}
+.nav button.a{background:var(--pl);box-shadow:none;border-radius:12px;margin:6px 4px;padding:8px 4px}
+.r .sw{flex:0 0 40px;height:40px;padding:0;border-radius:50%;border:3px solid var(--cd);box-shadow:0 0 0 1px var(--br)}
+@media print{.nav,.mq,.hd,button,input,select{display:none!important}}</style></head><body>
+<div class="w" id="app"></div>
+<script>
+const SB_URL='https://omxphhnwsxxmivvopwry.supabase.co', SB_KEY='sb_publishable_MxZA3aCWiUP7ttdMjpQYog_kEiAogUm';
+const sb=supabase.createClient(SB_URL,SB_KEY);
+let MO='',PR=[],CS=[],rec=false,P={},A=[],me,role='staff',S={},E=[],C=[],L=[],tab='home',open_=null;
+let lang=localStorage.lang||'bn';
+const D={"নষ্ট মাল": "Waste", "পরিমাণ": "Qty", "এই ব্রাউজারে ভয়েস চলে না, Chrome ব্যবহার করুন": "Voice is not supported here, use Chrome", "দিনের শেষে নগদ মেলান": "End-of-day cash check", "সকালে হাতে কত ছিল": "Cash in hand this morning", "এখন হাতে কত আছে": "Cash in hand now", "মেলান": "Check", "নগদ ঠিক মিলেছে": "Cash matches", "হাতের নগদ বেশি আছে: ": "Cash is higher by ", "হাতের নগদ কম আছে: ": "Cash is lower by ", "পণ্য তালিকা": "Products", "পিস": "pcs", "কেজি": "kg", "কেনা দাম": "Buy price", "বেচা দাম": "Sell price", "নাম ও বেচা দাম লিখুন": "Enter name and sell price", "রিপোর্ট": "Report", "মাসের রিপোর্ট": "Monthly report", "প্রিন্ট / PDF": "Print / PDF", "পণ্য অনুযায়ী লাভ": "Profit by item", "এই মাসে কোনো বিক্রি নেই।": "No sales this month.", "পণ্যের কেনা খরচ": "Cost of goods", "অন্যান্য খরচ": "Other expenses", "নিট লাভ": "Net profit", "পণ্যের নাম": "Item name","পাসওয়ার্ড ভুলে গেছেন?":"Forgot password?","আগে ইমেইল লিখুন":"Enter your email first","পাঠানো যায়নি, আবার চেষ্টা করুন":"Could not send, try again","ইমেইলে রিসেট লিংক পাঠানো হয়েছে":"Reset link sent to your email","নতুন পাসওয়ার্ড (কমপক্ষে ৬ অক্ষর)":"New password (at least 6 characters)","নতুন পাসওয়ার্ড":"New password","সেভ করুন":"Save","বাতিল":"Cancel","পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে":"Password must be at least 6 characters","বদলানো যায়নি":"Could not change","পাসওয়ার্ড বদলেছে":"Password changed","পাসওয়ার্ড বদল":"Change password","থিম":"Theme","হালকা":"Light","গাঢ়":"Dark","অটো":"Auto","কার্যকলাপ":"Activity","কে কী লিখেছে":"Who entered what","মোছা বা বদলানো লেখা":"Deleted or changed records","কিছু নেই।":"Nothing yet.","কোনো মোছা লেখা নেই।":"No deleted records.","ইমেইল বা পাসওয়ার্ড ভুল": "Wrong email or password", "ইমেইল": "Email", "পাসওয়ার্ড": "Password", "লগইন": "Login", "আজকের বিক্রি": "Today's sales", "আজকের খরচ": "Today's expenses", "আজকের লাভ": "Today's profit", "মোট বাকি": "Total due", "ফ্লেক্সি ব্যালেন্স": "Flexi balance", "বিকাশ ব্যালেন্স": "bKash balance", "নতুন লেখা": "New entry", "বিক্রি": "Sale", "খরচ": "Expense", "পণ্যের নাম (যেমন কফি, মাছ)": "Item name (e.g. coffee, fish)", "অঙ্ক (MVR)": "Amount (MVR)", "যোগ করুন": "Add", "আজকের তালিকা": "Today's list", "আজ এখনও কিছু লেখা হয়নি। উপরে প্রথম লেখাটা যোগ করুন।": "Nothing entered today. Add the first entry above.", "মুছুন": "Delete", "নতুন কাস্টমার": "New customer", "নাম": "Name", "ফোন (৭ অঙ্ক)": "Phone (7 digits)", "বাকির তালিকা": "Dues list", "এখনও কোনো কাস্টমার নেই।": "No customers yet.", "সেটিং": "Settings", "আপনি:": "You:", "অ্যাডমিন": "Admin", "কর্মচারী": "Staff", "দোকানের নাম": "Shop name", "দোকানের ফোন": "Shop phone", "ফোন": "Phone", "ফ্লেক্সি": "Flexi", "বিকাশ": "bKash", "পিন বদল": "Change PIN", "ব্যাকআপ": "Backup", "লগআউট": "Logout", "হিসাব": "Accounts", "বাকি দিলাম": "Gave on credit", "বাকি": "Due", "আরও": "More", "← ফিরে যান": "← Back", "ফোন নেই": "No phone", "অঙ্ক লিখুন": "Enter amount", "টাকা পেলাম": "Received payment", "পেলাম": "Received", "মেমো পাঠান": "Send memo", "প্রিন্ট": "Print", "ইতিহাস": "History", "কোনো লেখা নেই।": "No entries.", "কাস্টমার মুছুন": "Delete customer", "সঠিক অঙ্ক লিখুন": "Enter a valid amount", "সেভ হয়নি, আবার চেষ্টা করুন": "Not saved, try again", "সেভ হয়নি": "Not saved", "নাম লিখুন": "Enter a name", "মালদ্বীপের ৭ অঙ্কের নম্বর দিন": "Enter a 7-digit Maldives number", "বাকির চেয়ে বেশি লেখা যাবে না": "Cannot exceed the amount due", "এই কাস্টমারের ফোন নম্বর নেই": "This customer has no phone number", "শুধু অ্যাডমিন মুছতে পারবে": "Only admin can delete", "পিন দিন": "Enter PIN", "পিন ভুল, মোছা হয়নি": "Wrong PIN, not deleted", "মোছা যায়নি": "Could not delete", "মেমো": "Memo", "নাম:": "Name:", "তারিখ:": "Date:", "বাকি:": "Due:", "পেয়েছি:": "Received:", "ধন্যবাদ": "Thank you", "ফোন:": "Phone:", "স্বাগতম": "Welcome", "এই পণ্যের জন্য একটা ছবি (ইমোজি) দিন, না চাইলে খালি রাখুন": "Add an emoji icon for this item, or leave empty", "নতুন পিন (৪ অঙ্ক)": "New PIN (4 digits)"},K=Object.keys(D).sort((a,b)=>b.length-a.length);
+const tr=s=>lang==='en'?K.reduce((x,k)=>x.split(k).join(D[k]),s):s;
+window.alert=(a=>m=>a(tr(m)))(window.alert);window.prompt=(a=>(m,d)=>a(tr(m),d))(window.prompt);
+let TH=localStorage.th||'ocean',MD=localStorage.md||'auto';
+function ap(){const d=document.documentElement;d.dataset.theme=TH;d.dataset.mode=MD==='auto'?(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light'):MD}
+function setTheme(t){TH=t;localStorage.th=t;ap()}
+function setMode(m){MD=m;localStorage.md=m;ap()}
+ap();
+function setLang(l){lang=l;localStorage.lang=l;document.documentElement.lang=l;me?render():loginView()}
+const $=id=>document.getElementById(id);
+const M=n=>'MVR '+Number(n||0).toLocaleString('en');
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const IC=[['কোকা','🥤'],['cola','🥤'],['ড্রিংক','🥤'],['জুস','🧃'],['পানি','💧'],['কফি','☕'],['coffee','☕'],['চা','🍵'],['মাছ','🐟'],['fish','🐟'],['মাংস','🥩'],['meat','🥩'],['মুরগি','🍗'],['ডিম','🥚'],['আপেল','🍎'],['কলা','🍌'],['ফল','🍎'],['বিস্কিট','🍪'],['biscuit','🍪'],['ফ্লেক্সি','📱'],['flexi','📱'],['বিকাশ','💰'],['bkash','💰']];
+function ic(n){n=(n||'').toLowerCase();const m=JSON.parse(localStorage.im||'{}');if(m[n])return m[n];for(const[k,v]of IC)if(n.includes(k))return v;return'📦'}
+function learn(n){const k=n.toLowerCase();if(!n||ic(n)!=='📦')return;const e=prompt('এই পণ্যের জন্য একটা ছবি (ইমোজি) দিন, না চাইলে খালি রাখুন');if(e){const m=JSON.parse(localStorage.im||'{}');m[k]=e;localStorage.im=JSON.stringify(m)}}
+
+document.documentElement.lang=lang;
+async function init(){
+  const{data:{session}}=await sb.auth.getSession();
+  if(!session)return loginView();
+  me=session.user;
+  const{data:p}=await sb.from('profiles').select('role').eq('id',me.id).single();
+  role=p?.role||'staff';await load();
+}
+function loginView(){
+  $('app').innerHTML=tr(`<div class="c" style="margin-top:20vh"><h3>ইউনিক মার্ট</h3>
+  <input id="em" type="email" placeholder="ইমেইল" autocomplete="username">
+  <input id="pw" type="password" placeholder="পাসওয়ার্ড" autocomplete="current-password">
+  <div class="r" style="margin-bottom:8px"><button onclick="setLang('bn')">বাংলা</button><button onclick="setLang('en')">English</button></div><button class="p" style="width:100%" onclick="doLogin()">লগইন</button><button class="x" style="width:100%;margin-top:8px" onclick="forgot()">পাসওয়ার্ড ভুলে গেছেন?</button><p id="er" class="rd"></p></div>`);
+}
+async function doLogin(){
+  const{error}=await sb.auth.signInWithPassword({email:$('em').value.trim(),password:$('pw').value});
+  if(error)$('er').textContent=tr('ইমেইল বা পাসওয়ার্ড ভুল');else init();
+}
+async function load(){
+  const[a,b,c,d,pr,au,pq,cq]=await Promise.all([
+    sb.from('entries').select('*').order('created_at',{ascending:false}).limit(1000),
+    sb.from('customers').select('*').order('name'),
+    sb.from('ledger').select('*').order('created_at'),
+    sb.from('settings').select('*'),sb.from('profiles').select('id,name'),role==='admin'?sb.from('audit').select('*').order('at',{ascending:false}).limit(100):Promise.resolve({data:[]}),sb.from('products').select('*').order('name'),sb.from('costs').select('*')]);
+  E=a.data||[];P={};(pr.data||[]).forEach(r=>P[r.id]=String(r.name||'').split('@')[0]);A=au.data||[];PR=pq.data||[];CS=cq.data||[];C=b.data||[];L=c.data||[];S={};(d.data||[]).forEach(r=>S[r.key]=r.value);render();
+}
+const cost=id=>Number((CS.find(c=>c.product_id==id)||{}).buy||0),cg=e=>e.product_id?cost(e.product_id)*Number(e.qty||1):0,ym=d=>{const x=new Date(d);return x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')};
+const due=id=>L.filter(x=>x.customer_id==id).reduce((s,x)=>s+(x.kind==='due'?1:-1)*Number(x.amount),0);
+const today=e=>new Date(e.created_at).toDateString()===new Date().toDateString();
+const fmt=d=>new Date(d).toLocaleString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});
+
+function pk(i){$('pv').textContent=ic(i.value);const p=PR.find(x=>x.name===i.value.trim());if(p)$('ea').value=+(p.sell*($('eq').value||1)).toFixed(2)}
+function mic(){const R=window.SpeechRecognition||window.webkitSpeechRecognition;if(!R)return alert('এই ব্রাউজারে ভয়েস চলে না, Chrome ব্যবহার করুন');const r=new R();r.lang='bn-BD';r.onresult=e=>{let t=e.results[0][0].transcript.replace(/[০-৯]/g,d=>'০১২৩৪৫৬৭৮৯'.indexOf(d));const m=t.match(/\d+(\.\d+)?/);if(m)t=t.replace(m[0],'');$('en').value=t.trim();pk($('en'));if(m)$('ea').value=m[0]};r.start()}
+async function addP(){const n=$('pn2').value.trim(),s=Number($('ps').value),b=Number($('pb').value);if(!n||!(s>0))return alert('নাম ও বেচা দাম লিখুন');const{data,error}=await sb.from('products').insert({name:n,unit:$('pu').value,sell:s}).select().single();if(error)return alert('সেভ হয়নি');await sb.from('costs').insert({product_id:data.id,buy:b||0});load()}
+async function cclose(){const o=Number($('co').value)||0,n=Number($('cc').value);if($('cc').value==='')return alert('সঠিক অঙ্ক লিখুন');const T=E.filter(today),ex=o+T.filter(e=>e.kind==='sale').reduce((s,e)=>s+Number(e.amount),0)-T.filter(e=>e.kind==='expense').reduce((s,e)=>s+Number(e.amount),0),d=Math.round((n-ex)*100)/100;$('ccr').textContent=tr(d===0?'নগদ ঠিক মিলেছে':d>0?'হাতের নগদ বেশি আছে: ':'হাতের নগদ কম আছে: ')+(d?M(Math.abs(d)):'');await sb.from('cash_close').insert({expected:ex,counted:n})}
+async function forgot(){const e=$('em').value.trim();if(!e)return alert('আগে ইমেইল লিখুন');const{error}=await sb.auth.resetPasswordForEmail(e,{redirectTo:location.origin+location.pathname});alert(error?'পাঠানো যায়নি, আবার চেষ্টা করুন':'ইমেইলে রিসেট লিংক পাঠানো হয়েছে')}
+function newPwView(){$('app').innerHTML=tr(`<div class="c" style="margin-top:15vh"><h3>নতুন পাসওয়ার্ড</h3><input id="np" type="password" placeholder="নতুন পাসওয়ার্ড (কমপক্ষে ৬ অক্ষর)" autocomplete="new-password"><button class="p" style="width:100%" onclick="savePw()">সেভ করুন</button><button style="width:100%;margin-top:8px" onclick="rec=false;render()">বাতিল</button></div>`)}
+async function savePw(){const p=$('np').value;if(p.length<6)return alert('পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে');const{error}=await sb.auth.updateUser({password:p});if(error)return alert('বদলানো যায়নি');rec=false;alert('পাসওয়ার্ড বদলেছে');render()}
+sb.auth.onAuthStateChange(ev=>{if(ev==='PASSWORD_RECOVERY'){rec=true;newPwView()}});
+function render(){if(rec)return newPwView();
+  const T=E.filter(today),sale=T.filter(e=>e.kind==='sale').reduce((s,e)=>s+Number(e.amount),0),
+  exp=T.filter(e=>e.kind==='expense').reduce((s,e)=>s+Number(e.amount),0),
+  tot=C.reduce((s,c)=>s+due(c.id),0);
+  const pf=sale-exp-T.filter(e=>e.kind!=='expense').reduce((s,e)=>s+cg(e),0);
+  let v='';
+  if(tab==='home')v=`<div class="g">
+   <div class="k"><small>আজকের বিক্রি</small><b>${M(sale)}</b></div>
+   ${role==='admin'?`<div class="k"><small>আজকের খরচ</small><b>${M(exp)}</b></div>`:''}
+   ${role==='admin'?`<div class="k"><small>আজকের লাভ</small><b class="${pf>=0?'gn':'rd'}">${M(pf)}</b></div>`:''}
+   <div class="k"><small>মোট বাকি</small><b class="rd">${M(tot)}</b></div>
+   ${role==='admin'?`<div class="k"><small>📱 ফ্লেক্সি ব্যালেন্স</small><b>${M(S.flexi)}</b></div>`:''}
+   ${role==='admin'?`<div class="k"><small>💰 বিকাশ ব্যালেন্স</small><b>${M(S.bkash)}</b></div>`:''}</div>
+   <div class="c"><h3>নতুন লেখা</h3>
+   <select id="ek"><option value="sale">বিক্রি</option><option value="expense">খরচ</option><option value="waste">নষ্ট মাল</option></select>
+   <div class="r"><input id="en" list="pl" placeholder="পণ্যের নাম (যেমন কফি, মাছ)" oninput="pk(this)"><button style="flex:0 0 48px;margin-bottom:8px" onclick="mic()" aria-label="ভয়েস">🎤</button></div><datalist id="pl">${PR.map(p=>`<option value="${esc(p.name)}">`).join('')}</datalist>
+   <div class="r"><div id="pv" style="flex:0 0 44px;font-size:28px;text-align:center">📦</div><input id="eq" type="number" inputmode="decimal" value="1" placeholder="পরিমাণ" oninput="pk($('en'))" style="flex:0 0 80px"><input id="ea" type="number" inputmode="decimal" placeholder="অঙ্ক (MVR)"></div>
+   <button class="p" style="width:100%" onclick="addE()">যোগ করুন</button></div>${role==='admin'?`<div class="c"><h3>দিনের শেষে নগদ মেলান</h3><input id="co" type="number" inputmode="decimal" placeholder="সকালে হাতে কত ছিল"><input id="cc" type="number" inputmode="decimal" placeholder="এখন হাতে কত আছে"><button style="width:100%" onclick="cclose()">মেলান</button><p id="ccr" style="font-weight:600"></p></div>`:''}
+   <div class="c"><h3>আজকের তালিকা</h3>${T.length?T.map(e=>`<div class="i"><span>${ic(e.name)} ${esc(e.name||(e.kind==='sale'?'বিক্রি':'খরচ'))}<br><small>${fmt(e.created_at)}${role==='admin'?' · '+esc(P[e.created_by]||''):''}</small></span>
+   <span class="${e.kind==='sale'?'gn':'rd'}">${e.kind==='sale'?'+':'−'}${Number(e.amount)}${role==='admin'?`<button class="x" aria-label="মুছুন" onclick="del('entries',${e.id})">✕</button>`:''}</span></div>`).join(''):'<p class="mu">আজ এখনও কিছু লেখা হয়নি। উপরে প্রথম লেখাটা যোগ করুন।</p>'}</div>`;
+  if(tab==='due')v=open_?detail():`<div class="c"><h3>নতুন কাস্টমার</h3><input id="cn" placeholder="নাম"><input id="cp" inputmode="numeric" maxlength="7" placeholder="ফোন (৭ অঙ্ক)"><button class="p" style="width:100%" onclick="addC()">যোগ করুন</button></div>
+   <div class="c"><h3>বাকির তালিকা</h3>${C.length?[...C].sort((a,b)=>due(b.id)-due(a.id)).map(c=>`<div class="i" onclick="open_=${c.id};render()" style="cursor:pointer"><span>${esc(c.name)}<br><small>${esc(c.phone||'')}</small></span><b class="${due(c.id)>0?'rd':'gn'}">${M(due(c.id))}</b></div>`).join(''):'<p class="mu">এখনও কোনো কাস্টমার নেই।</p>'}</div>`;
+  if(tab==='more')v=`<div class="c"><h3>সেটিং</h3><div class="r" style="margin-bottom:10px"><button onclick="setLang('bn')">বাংলা</button><button onclick="setLang('en')">English</button></div><p class="mu" style="margin:0 0 6px">থিম</p><div class="r" style="margin-bottom:10px">${[['ocean','#0b5d63'],['green','#1c7c3f'],['royal','#2547c9'],['sunset','#d9541e'],['purple','#7a3fd1'],].map(([k,c])=>`<button class="sw" aria-label="${k}" style="background:${c}" onclick="setTheme('${k}')"></button>`).join('')}</div><div class="r" style="margin-bottom:10px"><button onclick="setMode('light')">হালকা</button><button onclick="setMode('dark')">গাঢ়</button><button onclick="setMode('auto')">অটো</button></div><p class="mu">আপনি: ${role==='admin'?'অ্যাডমিন':'কর্মচারী'}</p>
+   ${role==='admin'?`<div class="r"><button onclick="setS('shop','দোকানের নাম')">দোকানের নাম</button><button onclick="setS('phone','দোকানের ফোন')">ফোন</button></div>
+   <div class="r" style="margin-top:8px"><button onclick="setS('flexi','ফ্লেক্সি ব্যালেন্স')">ফ্লেক্সি</button><button onclick="setS('bkash','বিকাশ ব্যালেন্স')">বিকাশ</button></div>
+   <div class="r" style="margin-top:8px"><button onclick="setS('pin','নতুন পিন (৪ অঙ্ক)')">পিন বদল</button><button onclick="backup()">ব্যাকআপ</button></div>`:''}
+   <button style="width:100%;margin-top:12px" onclick="rec=true;render()">পাসওয়ার্ড বদল</button><button style="width:100%;margin-top:8px" onclick="sb.auth.signOut().then(init)">লগআউট</button></div>${role==='admin'?`<div class="c"><h3>পণ্য তালিকা</h3><input id="pn2" placeholder="পণ্যের নাম"><div class="r"><select id="pu"><option value="pcs">পিস</option><option value="kg">কেজি</option></select><input id="pb" type="number" inputmode="decimal" placeholder="কেনা দাম"><input id="ps" type="number" inputmode="decimal" placeholder="বেচা দাম"></div><button class="p" style="width:100%" onclick="addP()">যোগ করুন</button>${PR.map(p=>`<div class="i"><span>${ic(p.name)} ${esc(p.name)}<br><small>${p.unit==='kg'?'কেজি':'পিস'} · কেনা দাম ${cost(p.id)} · বেচা দাম ${Number(p.sell)}</small></span><button class="x" aria-label="মুছুন" onclick="del('products',${p.id})">✕</button></div>`).join('')}</div>`:''}`;
+  if(tab==='rep'){const mo=MO||ym(new Date()),X=E.filter(e=>ym(e.created_at)===mo),sl=X.filter(e=>e.kind==='sale'),sa=sl.reduce((s,e)=>s+Number(e.amount),0),ex=X.filter(e=>e.kind==='expense').reduce((s,e)=>s+Number(e.amount),0),wl=X.filter(e=>e.kind==='waste').reduce((s,e)=>s+cg(e),0),cs=sl.reduce((s,e)=>s+cg(e),0),by={};
+   sl.forEach(e=>{const k=e.name||'—';by[k]=by[k]||{q:0,a:0,p:0};by[k].q+=Number(e.qty||1);by[k].a+=Number(e.amount);by[k].p+=Number(e.amount)-cg(e)});
+   const row=(n,x,c)=>`<div class="i"><span>${n}</span><b class="${c||''}">${M(x)}</b></div>`;
+   v=`<div class="c"><h3>মাসের রিপোর্ট</h3><input type="month" value="${mo}" onchange="MO=this.value;render()">${row('বিক্রি',sa)}${row('পণ্যের কেনা খরচ',cs)}${row('নষ্ট মাল',wl)}${row('অন্যান্য খরচ',ex)}${row('নিট লাভ',sa-cs-wl-ex,sa-cs-wl-ex>=0?'gn':'rd')}<button style="width:100%;margin-top:10px" onclick="window.print()">প্রিন্ট / PDF</button></div>
+   <div class="c"><h3>পণ্য অনুযায়ী লাভ</h3>${Object.entries(by).sort((a,b)=>b[1].p-a[1].p).map(([k,o])=>`<div class="i"><span>${ic(k)} ${esc(k)}<br><small>বিক্রি ${o.q} · ${M(o.a)}</small></span><b class="${o.p>=0?'gn':'rd'}">${M(o.p)}</b></div>`).join('')||'<p class="mu">এই মাসে কোনো বিক্রি নেই।</p>'}</div>`}
+  if(tab==='log'){
+   const R=[...E.map(e=>({t:e.created_at,u:e.created_by,x:(e.kind==='sale'?'বিক্রি ':'খরচ ')+(e.name||'')+' '+Number(e.amount)})),...L.map(l=>({t:l.created_at,u:l.created_by,x:(l.kind==='due'?'বাকি ':'টাকা পেলাম ')+((C.find(c=>c.id==l.customer_id)||{}).name||'')+' '+Number(l.amount)}))].sort((a,b)=>new Date(b.t)-new Date(a.t)).slice(0,80);
+   v=`<div class="c"><h3>কে কী লিখেছে</h3>${R.map(r=>`<div class="i"><span>${esc(r.x)}<br><small>${esc(P[r.u]||'?')} · ${fmt(r.t)}</small></span></div>`).join('')||'<p class="mu">কিছু নেই।</p>'}</div>
+   <div class="c"><h3>মোছা বা বদলানো লেখা</h3>${A.map(a=>`<div class="i"><span>${esc(a.tbl)} ${esc(JSON.stringify(a.data).slice(0,90))}<br><small>${esc(P[a.by_user]||'?')} · ${fmt(a.at)}</small></span></div>`).join('')||'<p class="mu">কোনো মোছা লেখা নেই।</p>'}</div>`}
+  $('app').innerHTML=tr(`<div class="hd"><div class="lg">${esc((S.shop||'ইউনিক মার্ট').slice(0,1))}</div><div><b>${esc(S.shop||'ইউনিক মার্ট')}</b><small>${role==='admin'?'অ্যাডমিন':'কর্মচারী'}</small></div></div><div class="mq"><span>${esc(S.shop||'ইউনিক মার্ট')} — আজকের বিক্রি ${M(sale)} — মোট বাকি ${M(tot)} — স্বাগতম</span></div>${v}
+  <div class="nav">${[['home','হিসাব'],['due','বাকি'],...(role==='admin'?[['rep','রিপোর্ট'],['log','কার্যকলাপ']]:[]),['more','আরও']].map(([k,n])=>`<button class="${tab===k?'a':''}" onclick="tab='${k}';open_=null;render()">${n}</button>`).join('')}</div>`);
+}
+function detail(){
+  const c=C.find(x=>x.id==open_),h=L.filter(x=>x.customer_id==open_);
+  return`<button onclick="open_=null;render()">← ফিরে যান</button><div class="c"><h3>${esc(c.name)}</h3><p class="mu">${esc(c.phone||'ফোন নেই')}</p>
+  <p>মোট বাকি<br><b class="rd" style="font-size:26px">${M(due(c.id))}</b></p>
+  <input id="la" type="number" inputmode="decimal" placeholder="অঙ্ক লিখুন">
+  <div class="r"><button onclick="tx('due')">বাকি দিলাম</button><button class="p" onclick="tx('pay')">টাকা পেলাম</button></div></div>
+  <div class="c"><h3>মেমো পাঠান</h3><div class="r"><button onclick="send('wa')">WhatsApp</button><button onclick="send('sms')">SMS</button><button onclick="window.print()">প্রিন্ট</button></div></div>
+  <div class="c"><h3>ইতিহাস</h3>${[...h].reverse().map(x=>`<div class="i"><span>${x.kind==='due'?'বাকি':'পেলাম'}<br><small>${fmt(x.created_at)}</small></span><span class="${x.kind==='due'?'rd':'gn'}">${Number(x.amount)}${role==='admin'?`<button class="x" aria-label="মুছুন" onclick="del('ledger',${x.id})">✕</button>`:''}</span></div>`).join('')||'<p class="mu">কোনো লেখা নেই।</p>'}
+  ${role==='admin'?`<button style="width:100%;margin-top:10px" onclick="del('customers',${c.id})">কাস্টমার মুছুন</button>`:''}</div>`;
+}
+async function addE(){
+  const a=Number($('ea').value),n=$('en').value.trim();
+  if(!(a>0))return alert('সঠিক অঙ্ক লিখুন');
+  learn(n);
+  const{error}=await sb.from('entries').insert({kind:$('ek').value,name:n,amount:a,product_id:(PR.find(x=>x.name===n)||{}).id||null,qty:Number($('eq').value)||1});
+  if(error)return alert('সেভ হয়নি, আবার চেষ্টা করুন');load();
+}
+async function addC(){
+  const n=$('cn').value.trim(),p=$('cp').value.trim();
+  if(!n)return alert('নাম লিখুন');
+  if(p&&!/^[79]\d{6}$/.test(p))return alert('মালদ্বীপের ৭ অঙ্কের নম্বর দিন');
+  const{error}=await sb.from('customers').insert({name:n,phone:p});
+  if(error)return alert('সেভ হয়নি');load();
+}
+async function tx(kind){
+  const a=Number($('la').value);
+  if(!(a>0))return alert('সঠিক অঙ্ক লিখুন');
+  if(kind==='pay'&&a>due(open_))return alert('বাকির চেয়ে বেশি লেখা যাবে না');
+  const{error}=await sb.from('ledger').insert({customer_id:open_,kind,amount:a});
+  if(error)return alert('সেভ হয়নি');await load();
+}
+function memo(){
+  const c=C.find(x=>x.id==open_),l=L.filter(x=>x.customer_id==open_).slice(-1)[0];
+  return tr(`${S.shop||'ইউনিক মার্ট'}\nমেমো\nনাম: ${c.name}\nতারিখ: ${new Date().toLocaleString('en-GB')}\n${l?(l.kind==='due'?'বাকি: ':'পেয়েছি: ')+M(l.amount)+'\n':''}মোট বাকি: ${M(due(open_))}\nধন্যবাদ${S.phone?'\nফোন: '+S.phone:''}`);
+}
+function send(w){
+  const c=C.find(x=>x.id==open_);
+  if(!c.phone)return alert('এই কাস্টমারের ফোন নম্বর নেই');
+  const t=encodeURIComponent(memo());
+  location.href=w==='wa'?`https://wa.me/960${c.phone}?text=${t}`:`sms:+960${c.phone}?body=${t}`;
+}
+async function del(t,id){
+  if(role!=='admin')return alert('শুধু অ্যাডমিন মুছতে পারবে');
+  if(prompt('পিন দিন')!==(S.pin||'1234'))return alert('পিন ভুল, মোছা হয়নি');
+  const{error}=await sb.from(t).delete().eq('id',id);
+  if(error)return alert('মোছা যায়নি');if(t==='customers')open_=null;load();
+}
+async function setS(k,label){
+  const v=prompt(label,S[k]||'');if(v===null)return;
+  const{error}=await sb.from('settings').upsert({key:k,value:v.trim()});
+  if(error)return alert('সেভ হয়নি');load();
+}
+function backup(){
+  const b=new Blob([JSON.stringify({E,C,L,S},null,1)],{type:'application/json'}),a=document.createElement('a');
+  a.href=URL.createObjectURL(b);a.download='unique-mart-backup-'+new Date().toISOString().slice(0,10)+'.json';a.click();
+}
+init();
+</script></body></html>
