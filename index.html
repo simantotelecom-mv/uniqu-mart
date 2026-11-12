@@ -10,9 +10,6 @@
 <meta name="mobile-web-app-capable" content="yes">
 <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
 <style>
 :root{--bg:#f2f7f7;--cd:#fff;--tx:#14262a;--mu:#5d7276;--br:#dbe6e7;--pr:#0b5d63;--pl:#dff0f0;--rd:#d4513a;--gn:#18875a}
 html[data-mode=dark]{--bg:#0e1819;--cd:#162426;--tx:#e6f1f1;--mu:#8ea6a9;--br:#25393c;--rd:#ef7f6a;--gn:#4cc98f}
@@ -75,6 +72,12 @@ function setMode(m){MD=m;localStorage.md=m;ap()}
 ap();
 function setLang(l){lang=l;localStorage.lang=l;document.documentElement.lang=l;me?render():loginView()}
 const $=id=>document.getElementById(id);
+const LB={},lib=u=>LB[u]||(LB[u]=new Promise((r,j)=>{const s=document.createElement('script');s.src=u;s.onload=r;s.onerror=j;document.head.appendChild(s)}));
+const CL=['#0b5d63','#d4513a','#7a3fd1','#1c7c3f','#2547c9','#d9541e','#b8225f','#8a6d00'],SY=['●','★','◆','♥','▲','✿','☀','♦'];
+const hsh=s=>[...String(s)].reduce((a,c)=>(a*31+c.charCodeAt(0))>>>0,7),colr=n=>CL[hsh(n)%CL.length],symb=n=>SY[hsh(n)%SY.length];
+function normPh(p){let d=String(p||'').replace(/\D/g,'');if(!d)return'';if(d.startsWith('00'))d=d.slice(2);if(d.startsWith('960')&&d.length===10)d=d.slice(3);if(/^[79]\d{6}$/.test(d))return d;if(/^8801[3-9]\d{8}$/.test(d))return d;if(/^01[3-9]\d{8}$/.test(d))return'88'+d;if(/^1[3-9]\d{8}$/.test(d))return'880'+d;return null}
+const intl=p=>p.length===7?'960'+p:p,shP=p=>p.length===7?p:'+'+p;
+function fc(q){q=q.toLowerCase().trim();document.querySelectorAll('[data-s]').forEach(e=>e.style.display=e.dataset.s.includes(q)?'':'none')}
 const M=n=>'MVR '+Number(n||0).toLocaleString('en');
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const IC=[['কোকা','🥤'],['cola','🥤'],['ড্রিংক','🥤'],['জুস','🧃'],['পানি','💧'],['কফি','☕'],['coffee','☕'],['চা','🍵'],['মাছ','🐟'],['fish','🐟'],['মাংস','🥩'],['meat','🥩'],['মুরগি','🍗'],['ডিম','🥚'],['আপেল','🍎'],['কলা','🍌'],['ফল','🍎'],['বিস্কিট','🍪'],['biscuit','🍪'],['ফ্লেক্সি','📱'],['flexi','📱'],['বিকাশ','💰'],['bkash','💰']];
@@ -113,7 +116,6 @@ const today=e=>new Date(e.created_at).toDateString()===new Date().toDateString()
 const fmt=d=>new Date(d).toLocaleString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});
 
 function pk(i){$('pv').textContent=ic(i.value);const p=PR.find(x=>x.name===i.value.trim());if(p)$('ea').value=+(p.sell*($('eq').value||1)).toFixed(2)}
-function mic(){const R=window.SpeechRecognition||window.webkitSpeechRecognition;if(!R)return alert('এই ব্রাউজারে ভয়েস চলে না, Chrome ব্যবহার করুন');const r=new R();r.lang='bn-BD';r.onresult=e=>{let t=e.results[0][0].transcript.replace(/[০-৯]/g,d=>'০১২৩৪৫৬৭৮৯'.indexOf(d));const m=t.match(/\d+(\.\d+)?/);if(m)t=t.replace(m[0],'');$('en').value=t.trim();pk($('en'));if(m)$('ea').value=m[0]};r.start()}
 async function addP(){const n=$('pn2').value.trim(),s=Number($('ps').value),b=Number($('pb').value);if(!n||!(s>0))return alert('নাম ও বেচা দাম লিখুন');const{data,error}=await sb.from('products').insert({name:n,unit:$('pu').value,sell:s}).select().single();if(error)return alert('সেভ হয়নি');await sb.from('costs').insert({product_id:data.id,buy:b||0});load()}
 async function cclose(){const o=Number($('co').value)||0,n=Number($('cc').value);if($('cc').value==='')return alert('সঠিক অঙ্ক লিখুন');const T=E.filter(today),ex=o+T.filter(e=>e.kind==='sale').reduce((s,e)=>s+Number(e.amount),0)-T.filter(e=>e.kind==='expense').reduce((s,e)=>s+Number(e.amount),0),d=Math.round((n-ex)*100)/100;$('ccr').textContent=tr(d===0?'নগদ ঠিক মিলেছে':d>0?'হাতের নগদ বেশি আছে: ':'হাতের নগদ কম আছে: ')+(d?M(Math.abs(d)):'');await sb.from('cash_close').insert({expected:ex,counted:n})}
 async function forgot(){const e=$('em').value.trim();if(!e)return alert('আগে ইমেইল লিখুন');const{error}=await sb.auth.resetPasswordForEmail(e,{redirectTo:location.origin+location.pathname});alert(error?'পাঠানো যায়নি, আবার চেষ্টা করুন':'ইমেইলে রিসেট লিংক পাঠানো হয়েছে')}
@@ -130,18 +132,18 @@ function render(){if(rec)return newPwView();
    <div class="k"><small>আজকের বিক্রি</small><b>${M(sale)}</b></div>
    ${role==='admin'?`<div class="k"><small>আজকের খরচ</small><b>${M(exp)}</b></div>`:''}
    ${role==='admin'?`<div class="k"><small>আজকের লাভ</small><b class="${pf>=0?'gn':'rd'}">${M(pf)}</b></div>`:''}
-   <div class="k"><small>মোট বাকি</small><b class="rd">${M(tot)}</b></div>
+   ${role==='admin'?`<div class="k"><small>মোট বাকি</small><b class="rd">${M(tot)}</b></div>`:''}
    ${role==='admin'?`<div class="k"><small>📱 ফ্লেক্সি ব্যালেন্স</small><b>${M(S.flexi)}</b></div>`:''}
    ${role==='admin'?`<div class="k"><small>💰 বিকাশ ব্যালেন্স</small><b>${M(S.bkash)}</b></div>`:''}</div>
    <div class="c"><h3>নতুন লেখা</h3>
    <select id="ek"><option value="sale">বিক্রি</option><option value="expense">খরচ</option><option value="waste">নষ্ট মাল</option></select>
-   <div class="r"><input id="en" list="pl" placeholder="পণ্যের নাম (যেমন কফি, মাছ)" oninput="pk(this)"><button style="flex:0 0 48px;margin-bottom:8px" onclick="mic()" aria-label="ভয়েস">🎤</button></div><datalist id="pl">${PR.map(p=>`<option value="${esc(p.name)}">`).join('')}</datalist>
+   <div class="r"><input id="en" list="pl" placeholder="পণ্যের নাম (যেমন কফি, মাছ)" oninput="pk(this)"></div><datalist id="pl">${PR.map(p=>`<option value="${esc(p.name)}">`).join('')}</datalist>
    <div class="r"><div id="pv" style="flex:0 0 44px;font-size:28px;text-align:center">📦</div><input id="eq" type="number" inputmode="decimal" value="1" placeholder="পরিমাণ" oninput="pk($('en'))" style="flex:0 0 80px"><input id="ea" type="number" inputmode="decimal" placeholder="অঙ্ক (MVR)"></div>
    <button class="p" style="width:100%" onclick="addE()">যোগ করুন</button></div>${role==='admin'?`<div class="c"><h3>দিনের শেষে নগদ মেলান</h3><input id="co" type="number" inputmode="decimal" placeholder="সকালে হাতে কত ছিল"><input id="cc" type="number" inputmode="decimal" placeholder="এখন হাতে কত আছে"><button style="width:100%" onclick="cclose()">মেলান</button><p id="ccr" style="font-weight:600"></p></div>`:''}
    <div class="c"><h3>আজকের তালিকা</h3>${T.length?T.map(e=>`<div class="i"><span>${ic(e.name)} ${esc(e.name||(e.kind==='sale'?'বিক্রি':'খরচ'))}<br><small>${fmt(e.created_at)}${role==='admin'?' · '+esc(P[e.created_by]||''):''}</small></span>
    <span class="${e.kind==='sale'?'gn':'rd'}">${e.kind==='sale'?'+':'−'}${Number(e.amount)}${role==='admin'?`<button class="x" aria-label="মুছুন" onclick="del('entries',${e.id})">✕</button>`:''}</span></div>`).join(''):'<p class="mu">আজ এখনও কিছু লেখা হয়নি। উপরে প্রথম লেখাটা যোগ করুন।</p>'}</div>`;
-  if(tab==='due')v=open_?detail():`<div class="c"><h3>নতুন কাস্টমার</h3><input id="cn" placeholder="নাম"><input id="cp" inputmode="numeric" maxlength="7" placeholder="ফোন (৭ অঙ্ক)"><button class="p" style="width:100%" onclick="addC()">যোগ করুন</button></div>
-   <div class="c"><h3>বাকির তালিকা</h3>${C.length?[...C].sort((a,b)=>due(b.id)-due(a.id)).map(c=>`<div class="i" onclick="open_=${c.id};render()" style="cursor:pointer"><span>${esc(c.name)}<br><small>${esc(c.phone||'')}</small></span><b class="${due(c.id)>0?'rd':'gn'}">${M(due(c.id))}</b></div>`).join(''):'<p class="mu">এখনও কোনো কাস্টমার নেই।</p>'}</div>`;
+  if(tab==='due')v=open_?detail():`<div class="c"><h3>নতুন কাস্টমার</h3><input id="cn" placeholder="নাম"><input id="cp" inputmode="tel" maxlength="16" placeholder="ফোন (মালদ্বীপ বা বাংলাদেশ)"><button class="p" style="width:100%" onclick="addC()">যোগ করুন</button></div>
+   <div class="c"><h3>বাকির তালিকা</h3><input type="search" placeholder="🔍 নাম বা নাম্বার খুঁজুন" oninput="fc(this.value)">${C.length?[...C].sort((a,b)=>role==='admin'?due(b.id)-due(a.id):0).map(c=>`<div class="i" data-s="${esc((c.name+' '+(c.phone||'')).toLowerCase())}" onclick="open_=${c.id};render()" style="cursor:pointer"><span style="font-size:18px;font-weight:600;color:${colr(c.name)}">${symb(c.name)} ${esc(c.name)}<br><small style="font-size:12px;font-weight:400">${esc(c.phone?shP(c.phone):'')}</small></span>${role==='admin'?`<b style="font-size:16px" class="${due(c.id)>0?'rd':'gn'}">${M(due(c.id))}</b>`:''}</div>`).join(''):'<p class="mu">এখনও কোনো কাস্টমার নেই।</p>'}</div>`;
   if(tab==='more')v=`<div class="c"><h3>সেটিং</h3><div class="r" style="margin-bottom:10px"><button onclick="setLang('bn')">বাংলা</button><button onclick="setLang('en')">English</button></div><p class="mu" style="margin:0 0 6px">থিম</p><div class="r" style="margin-bottom:10px">${[['ocean','#0b5d63'],['green','#1c7c3f'],['royal','#2547c9'],['sunset','#d9541e'],['purple','#7a3fd1'],].map(([k,c])=>`<button class="sw" aria-label="${k}" style="background:${c}" onclick="setTheme('${k}')"></button>`).join('')}</div><div class="r" style="margin-bottom:10px"><button onclick="setMode('light')">হালকা</button><button onclick="setMode('dark')">গাঢ়</button><button onclick="setMode('auto')">অটো</button></div><p class="mu">আপনি: ${role==='admin'?'অ্যাডমিন':'কর্মচারী'}</p>
    ${role==='admin'?`<div class="r"><button onclick="setS('shop','দোকানের নাম')">দোকানের নাম</button><button onclick="setS('phone','দোকানের ফোন')">ফোন</button></div>
    <div class="r" style="margin-top:8px"><button onclick="setS('flexi','ফ্লেক্সি ব্যালেন্স')">ফ্লেক্সি</button><button onclick="setS('bkash','বিকাশ ব্যালেন্স')">বিকাশ</button></div>
@@ -156,17 +158,17 @@ function render(){if(rec)return newPwView();
    const R=[...E.map(e=>({t:e.created_at,u:e.created_by,x:(e.kind==='sale'?'বিক্রি ':'খরচ ')+(e.name||'')+' '+Number(e.amount)})),...L.map(l=>({t:l.created_at,u:l.created_by,x:(l.kind==='due'?'বাকি ':'টাকা পেলাম ')+((C.find(c=>c.id==l.customer_id)||{}).name||'')+' '+Number(l.amount)}))].sort((a,b)=>new Date(b.t)-new Date(a.t)).slice(0,80);
    v=`<div class="c"><h3>কে কী লিখেছে</h3>${R.map(r=>`<div class="i"><span>${esc(r.x)}<br><small>${esc(P[r.u]||'?')} · ${fmt(r.t)}</small></span></div>`).join('')||'<p class="mu">কিছু নেই।</p>'}</div>
    <div class="c"><h3>মোছা বা বদলানো লেখা</h3>${A.map(a=>`<div class="i"><span>${esc(a.tbl)} ${esc(JSON.stringify(a.data).slice(0,90))}<br><small>${esc(P[a.by_user]||'?')} · ${fmt(a.at)}</small></span></div>`).join('')||'<p class="mu">কোনো মোছা লেখা নেই।</p>'}</div>`}
-  $('app').innerHTML=tr(`<div class="hd"><div class="lg">${esc((S.shop||'ইউনিক মার্ট').slice(0,1))}</div><div><b>${esc(S.shop||'ইউনিক মার্ট')}</b><small>${role==='admin'?'অ্যাডমিন':'কর্মচারী'}</small></div></div><div class="mq"><span>${esc(S.shop||'ইউনিক মার্ট')} — আজকের বিক্রি ${M(sale)} — মোট বাকি ${M(tot)} — স্বাগতম</span></div>${v}
+  $('app').innerHTML=tr(`<div class="hd"><div class="lg">${esc((S.shop||'ইউনিক মার্ট').slice(0,1))}</div><div><b>${esc(S.shop||'ইউনিক মার্ট')}</b><small>${role==='admin'?'অ্যাডমিন':'কর্মচারী'}</small></div></div><div class="mq"><span>নিশান শপ — আজকের বিক্রি ${M(sale)}${role==='admin'?' — মোট বাকি '+M(tot):''} — স্বাগতম</span></div>${v}
   <div class="nav">${[['home','হিসাব'],['due','বাকি'],...(role==='admin'?[['rep','রিপোর্ট'],['log','কার্যকলাপ']]:[]),['more','আরও']].map(([k,n])=>`<button class="${tab===k?'a':''}" onclick="tab='${k}';open_=null;render()">${n}</button>`).join('')}</div>`);
 }
 function detail(){
   const c=C.find(x=>x.id==open_),h=L.filter(x=>x.customer_id==open_);
-  return`<button onclick="open_=null;render()">← ফিরে যান</button><div class="c"><h3>${esc(c.name)}</h3><p class="mu">${esc(c.phone||'ফোন নেই')}</p>
-  <p>মোট বাকি<br><b class="rd" style="font-size:26px">${M(due(c.id))}</b></p>
+  return`<button onclick="open_=null;render()">← ফিরে যান</button><div class="c"><h3 style="font-size:20px;color:${colr(c.name)}">${symb(c.name)} ${esc(c.name)}</h3><p class="mu">${esc(c.phone?shP(c.phone):'ফোন নেই')} <button class="x" onclick="editC()">✏️ এডিট</button></p>
+  ${role==='admin'?`<p>মোট বাকি<br><b class="rd" style="font-size:26px">${M(due(c.id))}</b></p>`:''}
   <input id="la" type="number" inputmode="decimal" placeholder="অঙ্ক লিখুন">
   <div class="r"><button onclick="tx('due')">বাকি দিলাম</button><button class="p" onclick="tx('pay')">টাকা পেলাম</button></div></div>
-  <div class="c"><h3>মেমো পাঠান</h3><div class="r"><button onclick="send('wa')">WhatsApp</button><button onclick="send('sms')">SMS</button><button onclick="window.print()">প্রিন্ট</button></div><button class="p" style="width:100%;margin-top:8px" onclick="pdfMemo()">রঙিন PDF মেমো</button></div>
-  <div class="c"><h3>ইতিহাস</h3>${[...h].reverse().map(x=>`<div class="i"><span>${x.kind==='due'?'বাকি':'পেলাম'}<br><small>${fmt(x.created_at)}</small></span><span class="${x.kind==='due'?'rd':'gn'}">${Number(x.amount)}${role==='admin'?`<button class="x" aria-label="মুছুন" onclick="del('ledger',${x.id})">✕</button>`:''}</span></div>`).join('')||'<p class="mu">কোনো লেখা নেই।</p>'}
+  <div class="c"><h3>মেমো পাঠান</h3><div class="r"><button onclick="send('wa')">WhatsApp</button><button onclick="send('sms')">SMS</button><button onclick="window.print()">প্রিন্ট</button></div><button class="p" style="width:100%;margin-top:8px" onclick="pdfMemo()">রঙিন PDF মেমো</button><div class="r" style="margin-top:8px"><button onclick="welcome('wa')">স্বাগত বার্তা (WhatsApp)</button><button onclick="welcome('sms')">স্বাগত বার্তা (SMS)</button></div></div>
+  <div class="c"><h3>ইতিহাস</h3>${[...h].reverse().map(x=>`<div class="i"><span>${x.kind==='due'?'বাকি':'পেলাম'}<br><small>${fmt(x.created_at)}</small></span><span class="${x.kind==='due'?'rd':'gn'}">${role==='admin'?Number(x.amount):'•••'}${role==='admin'?`<button class="x" aria-label="মুছুন" onclick="del('ledger',${x.id})">✕</button>`:''}</span></div>`).join('')||'<p class="mu">কোনো লেখা নেই।</p>'}
   ${role==='admin'?`<button style="width:100%;margin-top:10px" onclick="del('customers',${c.id})">কাস্টমার মুছুন</button>`:''}</div>`;
 }
 async function addE(){
@@ -177,9 +179,9 @@ async function addE(){
   if(error)return alert('সেভ হয়নি, আবার চেষ্টা করুন');load();
 }
 async function addC(){
-  const n=$('cn').value.trim(),p=$('cp').value.trim();
+  const n=$('cn').value.trim(),p=normPh($('cp').value);
   if(!n)return alert('নাম লিখুন');
-  if(p&&!/^[79]\d{6}$/.test(p))return alert('মালদ্বীপের ৭ অঙ্কের নম্বর দিন');
+  if(p===null)return alert('মালদ্বীপ বা বাংলাদেশের সঠিক নম্বর দিন');
   const{error}=await sb.from('customers').insert({name:n,phone:p});
   if(error)return alert('সেভ হয়নি');load();
 }
@@ -190,6 +192,22 @@ async function tx(kind){
   const{error}=await sb.from('ledger').insert({customer_id:open_,kind,amount:a});
   if(error)return alert('সেভ হয়নি');await load();
 }
+async function editC(){
+  const c=C.find(x=>x.id==open_);if(!c)return;
+  const n=prompt('কাস্টমারের নাম',c.name);if(n===null)return;
+  const p0=prompt('ফোন নম্বর',c.phone?shP(c.phone):'');if(p0===null)return;
+  const p=normPh(p0);
+  if(!n.trim())return alert('নাম লিখুন');
+  if(p===null)return alert('মালদ্বীপ বা বাংলাদেশের সঠিক নম্বর দিন');
+  const{error}=await sb.from('customers').update({name:n.trim(),phone:p}).eq('id',c.id);
+  if(error)return alert('সেভ হয়নি');load();
+}
+function welcome(w){
+  const c=C.find(x=>x.id==open_);
+  if(!c.phone)return alert('এই কাস্টমারের ফোন নম্বর নেই');
+  const t=encodeURIComponent(`আসসালামু আলাইকুম ${c.name}, ${S.shop||'ইউনিক মার্ট'}-এ আপনাকে স্বাগতম! আপনার সহযোগিতার জন্য ধন্যবাদ।${S.phone?' যোগাযোগ: '+S.phone:''}`);
+  location.href=w==='wa'?`https://wa.me/${intl(c.phone)}?text=${t}`:`sms:+${intl(c.phone)}?body=${t}`;
+}
 function memo(){
   const c=C.find(x=>x.id==open_),l=L.filter(x=>x.customer_id==open_).slice(-1)[0];
   return tr(`${S.shop||'ইউনিক মার্ট'}\nমেমো\nনাম: ${c.name}\nতারিখ: ${new Date().toLocaleString('en-GB')}\n${l?(l.kind==='due'?'বাকি: ':'পেয়েছি: ')+M(l.amount)+'\n':''}মোট বাকি: ${M(due(open_))}\nধন্যবাদ${S.phone?'\nফোন: '+S.phone:''}`);
@@ -198,7 +216,7 @@ function send(w){
   const c=C.find(x=>x.id==open_);
   if(!c.phone)return alert('এই কাস্টমারের ফোন নম্বর নেই');
   const t=encodeURIComponent(memo());
-  location.href=w==='wa'?`https://wa.me/960${c.phone}?text=${t}`:`sms:+960${c.phone}?body=${t}`;
+  location.href=w==='wa'?`https://wa.me/${intl(c.phone)}?text=${t}`:`sms:+${intl(c.phone)}?body=${t}`;
 }
 async function del(t,id){
   if(role!=='admin')return alert('শুধু অ্যাডমিন মুছতে পারবে');
@@ -214,6 +232,7 @@ async function setS(k,label){
 async function pdfMemo(){
   const c=C.find(x=>x.id==open_);if(!c)return;
   if(!c.token)return alert('আগে Supabase-এ SQL বসান (supabase_statement.sql)');
+  try{await Promise.all(['html2canvas@1.4.1/dist/html2canvas.min.js','jspdf@2.5.1/dist/jspdf.umd.min.js','qrcode-generator@1.4.4/qrcode.js'].map(u=>lib('https://cdn.jsdelivr.net/npm/'+u)))}catch(e){return alert('PDF বানানো যায়নি, ইন্টারনেট দেখুন')}
   const h=L.filter(x=>x.customer_id==c.id),l=h[h.length-1],d=due(c.id),shop=S.shop||'ইউনিক মার্ট';
   const link=new URL('statement.html',location.href).href+'?t='+c.token;
   const q=qrcode(0,'M');q.addData(link);q.make();
@@ -221,14 +240,14 @@ async function pdfMemo(){
   const paid=d<=0,sc=paid?'বিল পেইড':'বাকি আছে';
   const n=document.createElement('div');
   n.style.cssText='position:fixed;left:-9999px;top:0;width:360px;font-family:"Hind Siliguri",sans-serif;color:#14262a;background:linear-gradient(180deg,#e6f4f4,#fff 45%,#eaf6ee)';
-  n.innerHTML=`<div style="background:linear-gradient(135deg,#0b5d63,#1f9aa0);color:#fff;text-align:center;padding:18px 12px"><div style="width:52px;height:52px;margin:0 auto 6px;border-radius:50%;background:#fff;color:#0b5d63;font-size:30px;font-weight:600;line-height:52px">${esc(shop.slice(0,1))}</div><div style="font-size:24px;font-weight:600">${esc(shop)}</div><div style="font-size:13px;opacity:.9">মেমো</div></div>
+  n.innerHTML=`<div style="background:linear-gradient(135deg,#0b5d63,#1f9aa0);color:#fff;text-align:center;padding:18px 12px"><div style="width:60px;height:60px;margin:0 auto 6px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 3px rgba(255,255,255,.4)"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#0b5d63" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8h12l-1 12H7L6 8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg></div><div style="font-size:24px;font-weight:600">${esc(shop)}</div><div style="font-size:13px;opacity:.9">ইনভয়েস</div></div>
   <div style="padding:16px 18px"><div style="display:flex;justify-content:space-between;padding:4px 0"><span style="color:#5d7276">নাম</span><b>${esc(c.name)}</b></div>
   <div style="display:flex;justify-content:space-between;padding:4px 0"><span style="color:#5d7276">তারিখ</span><b>${dt}</b></div>
   ${l?`<div style="display:flex;justify-content:space-between;padding:8px 10px;margin-top:8px;border-radius:10px;background:${l.kind==='due'?'#fbe8e4':'#e1f4e7'};color:${l.kind==='due'?'#a93522':'#13623f'}"><span>${l.kind==='due'?'বাকি':'পেয়েছি'}</span><b>${M(l.amount)}</b></div>`:''}
   <div style="display:flex;justify-content:space-between;padding:10px 12px;margin-top:8px;border:2px solid ${paid?'#18875a':'#d4513a'};border-radius:10px;background:#fff;font-size:17px"><b>মোট বাকি</b><b style="color:${paid?'#18875a':'#d4513a'}">${M(Math.max(d,0))}</b></div>
   <div style="display:flex;align-items:center;justify-content:space-between;margin-top:14px"><div style="text-align:center"><img src="${q.createDataURL(4)}" style="width:104px;height:104px;background:#fff;padding:4px;border-radius:8px;border:1px solid #dbe6e7"><div style="font-size:11px;color:#5d7276">স্ক্যান করে পুরো হিসাব দেখুন</div></div>
   <div style="width:112px;height:112px;border:5px solid #d4211a;border-radius:50%;color:#d4211a;text-align:center;transform:rotate(-12deg);display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:inset 0 0 0 2px #fff,inset 0 0 0 4px #d4211a"><div style="font-size:11px;font-weight:600">${esc(shop)}</div><div style="font-size:20px;font-weight:600;line-height:1.2">${sc}</div><div style="font-size:11px;font-weight:600">${dt}</div></div></div>
-  ${S.phone?'':''}</div><div style="background:#0b5d63;color:#fff;text-align:center;padding:9px;font-size:13px">ধন্যবাদ</div>`;
+  ${S.phone?`<div style="text-align:center;margin-top:12px;font-size:14px;color:#0b5d63"><b>📞 ${esc(S.phone)}</b></div>`:''}<div style="text-align:center;margin-top:8px;font-size:12px;color:#5d7276">আপনার সহযোগিতার জন্য ধন্যবাদ। আমাদের সাথে থাকার জন্য স্বাগতম!</div></div><div style="background:#0b5d63;color:#fff;text-align:center;padding:9px;font-size:13px">ধন্যবাদ</div>`;
   document.body.appendChild(n);
   try{
     await document.fonts.ready;
