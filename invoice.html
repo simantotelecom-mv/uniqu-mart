@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ইউনিক মার্ট — ইনভয়েস</title>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--green:#0B5D43;--green-d:#073F2E;--gold:#C9972B;--cream:#FBF7EC;--ink:#1D2B25;--muted:#6B7A72;--line:#E4DCC6}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Hind Siliguri','Noto Sans Bengali',system-ui,sans-serif;background:#E9E5D8;color:var(--ink);padding:16px;display:flex;flex-direction:column;align-items:center;gap:14px}
+.inv{width:100%;max-width:560px;background:var(--cream);border-radius:14px;overflow:hidden;box-shadow:0 8px 30px rgba(7,63,46,.18)}
+.head{background:linear-gradient(135deg,var(--green-d),var(--green));color:#fff;padding:20px;display:flex;align-items:center;gap:14px;border-bottom:4px solid var(--gold)}
+.logo{width:58px;height:58px;border-radius:50%;background:var(--cream);border:3px solid var(--gold);display:grid;place-items:center;font-size:30px;font-weight:700;color:var(--green);flex:none}
+.shop h1{font-size:26px;line-height:1.1;font-weight:700}
+.shop p{font-size:13px;color:#F1D98F;margin-top:2px}
+.meta{display:flex;justify-content:space-between;gap:10px;padding:14px 20px;font-size:13px;color:var(--muted);border-bottom:1px dashed var(--line)}
+.meta b{color:var(--ink)}
+.cust{padding:16px 20px 6px}
+.cust .name{font-size:28px;font-weight:700;line-height:1.2;word-break:break-word}
+.cust .phone{font-size:12px;color:var(--muted);margin-top:2px}
+table{width:calc(100% - 40px);margin:12px 20px;border-collapse:collapse;font-size:15px}
+th{background:var(--green);color:#fff;font-weight:600;padding:8px;text-align:left}
+th:nth-child(n+3),td:nth-child(n+3){text-align:right}
+td{padding:9px 8px;border-bottom:1px solid var(--line)}
+tbody tr:nth-child(even){background:#F4EEDB}
+.sum{margin:4px 20px 14px auto;width:min(260px,calc(100% - 40px));font-size:16px}
+.sum div{display:flex;justify-content:space-between;padding:4px 0}
+.sum .due{border-top:2px solid var(--gold);margin-top:6px;padding-top:8px;font-weight:700;font-size:19px;color:#B3261E}
+.sum .due.clear{color:var(--green)}
+.foot{display:flex;align-items:center;gap:16px;padding:16px 20px;background:#F4EEDB;border-top:1px solid var(--line)}
+#qr{width:96px;height:96px;background:#fff;padding:5px;border:2px solid var(--gold);border-radius:8px;flex:none;display:grid;place-items:center;text-align:center}
+#qr img,#qr canvas{width:100%!important;height:100%!important}
+.foot .txt{font-size:13px;line-height:1.5}
+.foot .txt b{color:var(--green);font-size:15px}
+.welcome{background:var(--green-d);color:#F1D98F;text-align:center;padding:12px 16px;font-size:14px}
+button{font-family:inherit;font-size:16px;font-weight:600;background:var(--green);color:#fff;border:0;border-radius:10px;padding:12px 26px;cursor:pointer}
+button:focus-visible{outline:3px solid var(--gold)}
+noscript{color:#B3261E;font-weight:600}
+@page{size:A4;margin:10mm}
+@media print{body{background:#fff;padding:0}.inv{box-shadow:none;border-radius:0;max-width:none}button{display:none}*{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+</style>
+</head>
+<body>
+
+<noscript>এই ইনভয়েস দেখতে জাভাস্ক্রিপ্ট চালু থাকতে হবে।</noscript>
+
+<div class="inv" id="invoice">
+  <div class="head">
+    <div class="logo">ই</div>
+    <div class="shop"><h1>ইউনিক মার্ট</h1><p>নিশান শপ</p></div>
+  </div>
+
+  <div class="meta">
+    <div>ইনভয়েস নং: <b id="no"></b></div>
+    <div>তারিখ: <b id="date"></b></div>
+  </div>
+
+  <div class="cust">
+    <div class="name" id="cname"></div>
+    <div class="phone" id="cphone"></div>
+  </div>
+
+  <table>
+    <thead><tr><th>পণ্য</th><th>পরিমাণ</th><th>দাম</th><th>মোট</th></tr></thead>
+    <tbody id="items"></tbody>
+  </table>
+
+  <div class="sum">
+    <div><span>মোট</span><span id="total"></span></div>
+    <div><span>নগদ পরিশোধ</span><span id="paid"></span></div>
+    <div class="due" id="dueRow"><span id="dueLabel">বাকি</span><span id="due"></span></div>
+  </div>
+
+  <div class="foot">
+    <div id="qr"></div>
+    <div class="txt">
+      <b>আপনার হিসাব দেখুন</b><br>
+      QR স্ক্যান করলে শুধু আপনার নিজের হিসাব দেখা যাবে।<br>
+      মহাজন: <span id="admin"></span>
+    </div>
+  </div>
+  <div class="welcome">আপনার বিশ্বাসই আমাদের সবচেয়ে বড় সম্পদ। আবার আসবেন, ধন্যবাদ!</div>
+</div>
+
+<button onclick="window.print()">PDF সংরক্ষণ / প্রিন্ট</button>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+(function () {
+  "use strict";
+  /* ===== এখানে তথ্য বদলান ===== */
+  var DATA = {
+    no: "UM-0001",
+    date: "২০ নভেম্বর ২০২৬",
+    customer: { name: "রহিম উদ্দিন", phone: "01XXXXXXXXX", color: "#0B7285", symbol: "★" },
+    items: [
+      { name: "চাল (৫ কেজি)", qty: 1, price: 420 },
+      { name: "তেল (১ লিটার)", qty: 2, price: 180 },
+      { name: "চিনি (১ কেজি)", qty: 1, price: 120 }
+    ],
+    paid: 400,
+    admin: "01XXXXXXXXX",
+    link: "https://simantotelecom-mv.github.io/uniqu-mart/",
+    token: "" /* গ্রাহকের গোপন লিংক-কোড (ফোন নম্বর নয়) */
+  };
+  /* ============================ */
+
+  var $ = function (id) { return document.getElementById(id); };
+  var bn = function (n) { return String(n).replace(/\d/g, function (d) { return "০১২৩৪৫৬৭৮৯"[d]; }); };
+  var num = function (v) { var x = Number(v); return isFinite(x) && x >= 0 ? x : 0; };
+  var money = function (v) { return "৳" + bn((Math.round(v * 100) / 100).toLocaleString("en-US")); };
+  var safeColor = function (c) { return /^#[0-9a-fA-F]{3,8}$/.test(c) ? c : "#0B7285"; };
+  var setText = function (id, t) { var e = $(id); if (e) e.textContent = t; };
+
+  function build() {
+    setText("no", DATA.no);
+    setText("date", DATA.date);
+    setText("cname", (DATA.customer.symbol || "●") + " " + DATA.customer.name);
+    $("cname").style.color = safeColor(DATA.customer.color);
+    setText("cphone", "📞 " + DATA.customer.phone);
+    setText("admin", DATA.admin);
+
+    var tbody = $("items"), total = 0;
+    tbody.textContent = "";
+    DATA.items.forEach(function (i) {
+      var q = num(i.qty), p = num(i.price), t = q * p;
+      total += t;
+      var tr = document.createElement("tr");
+      [String(i.name), bn(q), money(p), money(t)].forEach(function (v) {
+        var td = document.createElement("td");
+        td.textContent = v;
+        tr.appendChild(td);
+      });
+      tbody.appendChild(tr);
+    });
+
+    var paid = num(DATA.paid), due = total - paid;
+    setText("total", money(total));
+    setText("paid", money(paid));
+    if (due < 0) { setText("dueLabel", "অগ্রিম জমা"); setText("due", money(-due)); }
+    else { setText("dueLabel", "বাকি"); setText("due", money(due)); }
+    if (due <= 0) $("dueRow").classList.add("clear");
+
+    var url = DATA.link + (DATA.token ? "?t=" + encodeURIComponent(DATA.token) : "");
+    var qr = $("qr");
+    try {
+      if (typeof QRCode === "undefined") throw new Error("no lib");
+      new QRCode(qr, { text: url, width: 128, height: 128, colorDark: "#073F2E", colorLight: "#ffffff" });
+    } catch (e) {
+      qr.textContent = "";
+      var a = document.createElement("a");
+      a.href = DATA.link; a.textContent = "হিসাব দেখতে এখানে চাপুন";
+      a.style.cssText = "font-size:11px;word-break:break-all;color:#0B5D43";
+      qr.appendChild(a);
+    }
+  }
+
+  build();
+})();
+</script>
+</body>
+</html>
